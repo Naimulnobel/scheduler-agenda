@@ -5,12 +5,13 @@ const moment = require('moment')
 require('moment-timezone')
 const Agenda = require('agenda')
 app.use(express.json());
-const agenda = new Agenda({ db: { address: 'mongodb://localhost:27017/agenda' } });
+const agenda = new Agenda({ db: { address: 'mongodb://localhost:27017/agenda' }, defaultConcurrency: 1, });
 
-agenda.define('hello', async (job) => {
+agenda.define('hello', { concurrency: 1 }, async (job) => {
     console.log('Hello, world!');
     job.attrs.shouldSaveResult = true;
 })
+agenda.start();
 app.post('/', async (req, res) => {
     let { toDate } = req.body
 
@@ -27,7 +28,7 @@ app.post('/', async (req, res) => {
     }
     console.log(time);
     try {
-        await agenda.start();
+
         await agenda.schedule(time, 'hello');
         res.json({ message: 'success', time })
 
