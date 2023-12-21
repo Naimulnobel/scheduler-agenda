@@ -29,7 +29,7 @@ app.post('/', async (req, res) => {
     console.log(time);
     try {
 
-        await agenda.schedule(time, 'hello');
+        await agenda.schedule(time, 'hello', { time });
         res.json({ message: 'success', time })
 
     } catch (error) {
